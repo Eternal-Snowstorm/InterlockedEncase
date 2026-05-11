@@ -10,6 +10,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -18,7 +19,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Interlocked.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EncasedShaftWrenchHandler {
-	
+
 	@SubscribeEvent
 	public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
 		Level level = event.getLevel();
@@ -58,26 +59,26 @@ public class EncasedShaftWrenchHandler {
 			offset = new Vec3i(0, 0, 1);
 		}
 
-		for (int i = 0; i < encaseLimit; i++) {
-			Vec3i targetOffset = offset.multiply(i);
-			BlockPos targetPos = pos.offset(targetOffset);
-			BlockState targetState = level.getBlockState(targetPos);
+		for (int dir = -1; dir <= 1; dir += 2) {
+			for (int i = (dir == 1 ? 0 : 1); i < encaseLimit; i++) {
+				Vec3i targetOffset = offset.multiply(i * dir);
+				BlockPos targetPos = pos.offset(targetOffset);
+				BlockState targetState = level.getBlockState(targetPos);
+				Block targetBlock = targetState.getBlock();
 
-			if (targetState.getValue(BlockStateProperties.AXIS) != axis) {
-				break;
+				if (targetBlock != AllBlocks.ANDESITE_ENCASED_SHAFT.get() &&
+						targetBlock != AllBlocks.BRASS_ENCASED_SHAFT.get()) {
+					break;
+				}
+
+				if (targetState.getValue(BlockStateProperties.AXIS) != axis) {
+					break;
+				}
+
+				event.setCanceled(true);
+				player.swing(event.getHand());
+				level.setBlockAndUpdate(targetPos, AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
 			}
-			level.setBlockAndUpdate(targetPos, AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
-		}
-
-		for (int i = 1; i < encaseLimit; i++) {
-			Vec3i targetOffset = offset.multiply(-i);
-			BlockPos targetPos = pos.offset(targetOffset);
-			BlockState targetState = level.getBlockState(targetPos);
-
-			if (targetState.getValue(BlockStateProperties.AXIS) != axis) {
-				break;
-			}
-			level.setBlockAndUpdate(targetPos, AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
 		}
 	}
 }
