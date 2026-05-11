@@ -6,7 +6,7 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import dev.celestiacraft.interlocked.Interlocked;
-import dev.celestiacraft.interlocked.client.EncaseKeyMapping;
+import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
