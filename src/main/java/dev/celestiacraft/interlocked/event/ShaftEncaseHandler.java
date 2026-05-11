@@ -2,7 +2,6 @@ package dev.celestiacraft.interlocked.event;
 
 
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllItems;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import net.minecraft.core.BlockPos;
