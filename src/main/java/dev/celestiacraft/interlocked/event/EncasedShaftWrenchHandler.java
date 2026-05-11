@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Interlocked.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EncasedShaftWrenchHandler {
+	
 	@SubscribeEvent
 	public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
 		Level level = event.getLevel();
@@ -68,8 +69,8 @@ public class EncasedShaftWrenchHandler {
 			level.setBlockAndUpdate(targetPos, AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
 		}
 
-		for (int i = -1; i > -encaseLimit; i--) {
-			Vec3i targetOffset = offset.multiply(i);
+		for (int i = 1; i < encaseLimit; i++) {
+			Vec3i targetOffset = offset.multiply(-i);
 			BlockPos targetPos = pos.offset(targetOffset);
 			BlockState targetState = level.getBlockState(targetPos);
 

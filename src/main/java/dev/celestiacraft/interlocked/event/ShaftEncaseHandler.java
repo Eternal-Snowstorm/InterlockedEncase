@@ -33,10 +33,13 @@ public class ShaftEncaseHandler {
 		if (player == null) {
 			return;
 		}
+		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
+			return;
+		}
 		if (player.isShiftKeyDown()) {
 			return;
 		}
-		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
+		if (!stack.is(AllBlocks.ANDESITE_CASING.asItem()) && !stack.is(AllBlocks.BRASS_CASING.asItem())) {
 			return;
 		}
 		if (!state.is(AllBlocks.SHAFT.get())) {
@@ -58,6 +61,7 @@ public class ShaftEncaseHandler {
 			Vec3i targetOffset = offset.multiply(i);
 			BlockPos targetPos = pos.offset(targetOffset);
 			BlockState targetState = level.getBlockState(targetPos);
+
 			if (!targetState.is(AllBlocks.SHAFT.get()) || targetState.getValue(BlockStateProperties.AXIS) != axis) {
 				break;
 			}
@@ -71,6 +75,7 @@ public class ShaftEncaseHandler {
 			Vec3i targetOffset = offset.multiply(i);
 			BlockPos targetPos = pos.offset(targetOffset);
 			BlockState targetState = level.getBlockState(targetPos);
+
 			if (!targetState.is(AllBlocks.SHAFT.get()) || targetState.getValue(BlockStateProperties.AXIS) != axis) {
 				break;
 			}
