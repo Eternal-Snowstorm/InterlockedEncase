@@ -1,10 +1,14 @@
 package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
+import com.simibubi.create.AllSoundEvents;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -54,6 +58,16 @@ public class FluidPipeEncaseHandler {
 
 		event.setCanceled(true);
 		player.swing(event.getHand());
+		level.playSound(
+				null,
+				startPos.getX() + 0.5,
+				startPos.getY() + 1.0,
+				startPos.getZ() + 0.5,
+				SoundEvents.COPPER_PLACE,
+				SoundSource.BLOCKS,
+				3,
+				1
+		);
 
 		int encaseLimit = 32;
 

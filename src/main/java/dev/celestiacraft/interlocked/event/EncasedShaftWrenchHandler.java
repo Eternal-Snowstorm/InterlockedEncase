@@ -41,13 +41,15 @@ public class EncasedShaftWrenchHandler {
 		if (!stack.is(AllItems.WRENCH.get())) {
 			return;
 		}
-		if (!player.isShiftKeyDown()) {
+		if (player.isShiftKeyDown()) {
 			return;
 		}
 		if (!state.is(AllBlocks.ANDESITE_ENCASED_SHAFT.get()) && !state.is(AllBlocks.BRASS_ENCASED_SHAFT.get())) {
 			return;
 		}
 
+		event.setCanceled(true);
+		player.swing(event.getHand());
 		Direction.Axis axis = state.getValue(BlockStateProperties.AXIS);
 		Vec3i offset = new Vec3i(0, 0, 0);
 
