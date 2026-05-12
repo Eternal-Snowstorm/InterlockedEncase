@@ -4,6 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
+import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -31,15 +32,7 @@ public class EncasedPipeWrenchHandler {
 		ItemStack stack = event.getItemStack();
 		BlockPos startPos = event.getPos();
 
-		if (level.isClientSide()) {
-			return;
-		}
-
-		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
-			return;
-		}
-
-		if (player.isShiftKeyDown()) {
+		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
 

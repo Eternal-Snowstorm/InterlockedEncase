@@ -4,6 +4,7 @@ package dev.celestiacraft.interlocked.event;
 import com.simibubi.create.AllBlocks;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
+import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -16,6 +17,8 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
+import java.util.Set;
+
 @Mod.EventBusSubscriber(modid = Interlocked.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ShaftEncaseHandler {
 	@SubscribeEvent
@@ -25,18 +28,8 @@ public class ShaftEncaseHandler {
 		ItemStack stack = event.getItemStack();
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
-		int encaseLimit = 32;
 
-		if (level.isClientSide()) {
-			return;
-		}
-		if (player == null) {
-			return;
-		}
-		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
-			return;
-		}
-		if (player.isShiftKeyDown()) {
+		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
 		if (!stack.is(AllBlocks.ANDESITE_CASING.asItem()) && !stack.is(AllBlocks.BRASS_CASING.asItem())) {
@@ -47,34 +40,17 @@ public class ShaftEncaseHandler {
 		}
 
 		Direction.Axis axis = state.getValue(BlockStateProperties.AXIS);
-		Vec3i offset = new Vec3i(0, 0, 0);
+		Set<BlockPos> targets = InterlockHelper.getInterlocked(pos, AllBlocks.SHAFT.get(), axis, level);
 
-		if (axis == Direction.Axis.X) {
-			offset = new Vec3i(1, 0, 0);
-		} else if (axis == Direction.Axis.Y) {
-			offset = new Vec3i(0, 1, 0);
-		} else if (axis == Direction.Axis.Z) {
-			offset = new Vec3i(0, 0, 1);
-		}
-
-		for (int dir = -1; dir <= 1; dir += 2) {
-			for (int i = 1; i < encaseLimit; i++) {
-				Vec3i targetOffset = offset.multiply(i * dir);
-				BlockPos targetPos = pos.offset(targetOffset);
-				BlockState targetState = level.getBlockState(targetPos);
-
-				if (!targetState.is(AllBlocks.SHAFT.get())) {
-					break;
-				}
-				if (targetState.getValue(BlockStateProperties.AXIS) != axis) {
-					break;
-				}
-				if (stack.is(AllBlocks.ANDESITE_CASING.asItem())) {
-					level.setBlockAndUpdate(targetPos, AllBlocks.ANDESITE_ENCASED_SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
-				} else if (stack.is(AllBlocks.BRASS_CASING.asItem())) {
-					level.setBlockAndUpdate(targetPos, AllBlocks.BRASS_ENCASED_SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
-				}
+		event.setCanceled(true);
+		player.swing(event.getHand());
+		for (BlockPos targetPos : targets) {
+			level.destroyBlock(targetPos, false);
+			BlockState newState = AllBlocks.ANDESITE_ENCASED_SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis);
+			if (stack.is(AllBlocks.BRASS_CASING.asItem())) {
+				newState = AllBlocks.BRASS_ENCASED_SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis);
 			}
+			level.setBlockAndUpdate(targetPos, newState);
 		}
 	}
 }

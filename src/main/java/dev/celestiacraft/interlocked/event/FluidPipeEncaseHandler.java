@@ -4,6 +4,7 @@ import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllSoundEvents;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
+import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
@@ -34,15 +35,7 @@ public class FluidPipeEncaseHandler {
 		ItemStack stack = event.getItemStack();
 		BlockPos startPos = event.getPos();
 
-		if (level.isClientSide()) {
-			return;
-		}
-
-		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
-			return;
-		}
-
-		if (player.isShiftKeyDown()) {
+		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
 
