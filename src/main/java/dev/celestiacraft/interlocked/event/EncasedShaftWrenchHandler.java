@@ -70,13 +70,12 @@ public class EncasedShaftWrenchHandler {
 						targetBlock != AllBlocks.BRASS_ENCASED_SHAFT.get()) {
 					break;
 				}
-
 				if (targetState.getValue(BlockStateProperties.AXIS) != axis) {
 					break;
 				}
-
 				event.setCanceled(true);
 				player.swing(event.getHand());
+				level.destroyBlock(targetPos, false);
 				level.setBlockAndUpdate(targetPos, AllBlocks.SHAFT.getDefaultState().setValue(BlockStateProperties.AXIS, axis));
 			}
 		}
