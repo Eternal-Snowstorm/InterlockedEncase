@@ -26,6 +26,9 @@ public class EncasedShaftReplaceHandler {
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 
+		if (level.isClientSide()) {
+			return;
+		}
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}

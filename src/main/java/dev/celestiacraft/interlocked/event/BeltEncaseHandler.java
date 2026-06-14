@@ -6,7 +6,6 @@ import com.simibubi.create.AllItems;
 import com.simibubi.create.content.kinetics.belt.BeltBlockEntity;
 import com.simibubi.create.content.kinetics.belt.BeltHelper;
 import dev.celestiacraft.interlocked.Interlocked;
-import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
@@ -29,6 +28,9 @@ public class BeltEncaseHandler {
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 
+		if (level.isClientSide()) {
+			return;
+		}
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}

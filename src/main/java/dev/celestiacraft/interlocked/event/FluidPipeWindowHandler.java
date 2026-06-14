@@ -3,7 +3,6 @@ package dev.celestiacraft.interlocked.event;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
-import com.simibubi.create.content.fluids.pipes.FluidPipeBlock;
 import com.simibubi.create.content.fluids.pipes.GlassFluidPipeBlock;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
@@ -31,6 +30,9 @@ public class FluidPipeWindowHandler {
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 
+		if (level.isClientSide()) {
+			return;
+		}
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}

@@ -1,13 +1,10 @@
 package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
-import com.simibubi.create.AllSoundEvents;
 import dev.celestiacraft.interlocked.Interlocked;
-import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
@@ -35,10 +32,12 @@ public class FluidPipeEncaseHandler {
 		ItemStack stack = event.getItemStack();
 		BlockPos startPos = event.getPos();
 
+		if (level.isClientSide()) {
+			return;
+		}
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
-
 		BlockState startState = level.getBlockState(startPos);
 
 		if (!startState.is(AllBlocks.FLUID_PIPE.get())) {

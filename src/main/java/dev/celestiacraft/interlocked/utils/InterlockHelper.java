@@ -27,9 +27,6 @@ public class InterlockHelper {
 		Level level = event.getLevel();
 		Player player = event.getEntity();
 
-		if (level.isClientSide()) {
-			return false;
-		}
 		if (!EncaseKeyMapping.ACTIVATE.isDown()) {
 			return false;
 		}

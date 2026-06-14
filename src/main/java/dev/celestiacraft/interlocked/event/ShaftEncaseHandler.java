@@ -3,11 +3,9 @@ package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
 import dev.celestiacraft.interlocked.Interlocked;
-import dev.celestiacraft.interlocked.client.key.EncaseKeyMapping;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -29,6 +27,9 @@ public class ShaftEncaseHandler {
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
 
+		if (level.isClientSide()) {
+			return;
+		}
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
