@@ -6,7 +6,6 @@ import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -17,13 +16,14 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Set;
 
+import static dev.celestiacraft.interlocked.utils.InterlockHelper.confirmInteraction;
+
 @Mod.EventBusSubscriber(modid = Interlocked.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EncasedShaftWrenchHandler {
 
 	@SubscribeEvent
 	public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
 		Level level = event.getLevel();
-		Player player = event.getEntity();
 		ItemStack stack = event.getItemStack();
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
@@ -41,14 +41,19 @@ public class EncasedShaftWrenchHandler {
 			return;
 		}
 
-		event.setCanceled(true);
-		player.swing(event.getHand());
+		confirmInteraction(event);
 
 		Direction.Axis axis = state.getValue(BlockStateProperties.AXIS);
-		Set<BlockPos> targets = InterlockHelper.getEncasedShaft(pos, axis, level);
+		Set<BlockPos> targets = InterlockHelper.getLineTargets(
+				pos,
+				axis,
+				level,
+				targetState -> (targetState.is(AllBlocks.ANDESITE_ENCASED_SHAFT.get())
+						|| targetState.is(AllBlocks.BRASS_ENCASED_SHAFT.get()))
+						&& targetState.hasProperty(BlockStateProperties.AXIS)
+						&& targetState.getValue(BlockStateProperties.AXIS) == axis
+		);
 
-		event.setCanceled(true);
-		player.swing(event.getHand());
 		for (BlockPos targetPos : targets) {
 			level.destroyBlock(targetPos, false);
 			BlockState newState;

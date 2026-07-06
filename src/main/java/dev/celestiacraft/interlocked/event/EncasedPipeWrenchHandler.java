@@ -5,8 +5,6 @@ import com.simibubi.create.AllItems;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -15,10 +13,9 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Set;
+
+import static dev.celestiacraft.interlocked.utils.InterlockHelper.confirmInteraction;
 
 @Mod.EventBusSubscriber(modid = Interlocked.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EncasedPipeWrenchHandler {
@@ -27,7 +24,6 @@ public class EncasedPipeWrenchHandler {
 	public static void onRightClick(PlayerInteractEvent.RightClickBlock event) {
 
 		Level level = event.getLevel();
-		Player player = event.getEntity();
 		ItemStack stack = event.getItemStack();
 		BlockPos startPos = event.getPos();
 
@@ -48,22 +44,15 @@ public class EncasedPipeWrenchHandler {
 			return;
 		}
 
-		event.setCanceled(true);
-		player.swing(event.getHand());
+		confirmInteraction(event);
 
-		int encaseLimit = 32;
+		Set<BlockPos> targets = InterlockHelper.getConnectedTargets(
+				level,
+				startPos,
+				targetState -> targetState.is(AllBlocks.ENCASED_FLUID_PIPE.get())
+		);
 
-		Set<BlockPos> visited = new HashSet<>();
-		Queue<BlockPos> queue = new LinkedList<>();
-
-		queue.add(startPos);
-		visited.add(startPos);
-
-		int count = 0;
-
-		while (!queue.isEmpty() && count < encaseLimit) {
-
-			BlockPos currentPos = queue.poll();
+		for (BlockPos currentPos : targets) {
 			BlockState currentState = level.getBlockState(currentPos);
 
 			if (!currentState.is(AllBlocks.ENCASED_FLUID_PIPE.get())) {
@@ -82,25 +71,6 @@ public class EncasedPipeWrenchHandler {
 
 			level.destroyBlock(currentPos, false);
 			level.setBlockAndUpdate(currentPos, newState);
-
-			for (Direction direction : Direction.values()) {
-
-				BlockPos nextPos = currentPos.relative(direction);
-
-				if (visited.contains(nextPos)) {
-					continue;
-				}
-
-				BlockState nextState = level.getBlockState(nextPos);
-
-				if (nextState.is(AllBlocks.ENCASED_FLUID_PIPE.get())) {
-
-					visited.add(nextPos);
-					queue.add(nextPos);
-				}
-			}
-
-			count++;
 		}
 	}
 
