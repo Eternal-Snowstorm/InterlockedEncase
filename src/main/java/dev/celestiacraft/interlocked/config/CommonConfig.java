@@ -15,7 +15,7 @@ public class CommonConfig {
 				.comment("The limit of interlock distance")
 				.comment("type: int")
 				.comment("default: 32")
-				.defineInRange("interlock_distance_limit", 32, 0, 128);
+				.defineInRange("interlock_distance_limit", 32, 2, 128);
 
 		BUILDER.pop();
 	}
