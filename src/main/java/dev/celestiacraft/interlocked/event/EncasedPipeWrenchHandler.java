@@ -2,6 +2,7 @@ package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllTags;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
@@ -40,7 +41,7 @@ public class EncasedPipeWrenchHandler {
 			return;
 		}
 
-		if (!stack.is(AllItems.WRENCH.get())) {
+		if (!AllTags.AllItemTags.WRENCH.matches(stack)) {
 			return;
 		}
 
@@ -74,7 +75,7 @@ public class EncasedPipeWrenchHandler {
 		}
 	}
 
-	@SuppressWarnings( {"rawtypes", "unchecked"})
+	@SuppressWarnings({"rawtypes", "unchecked"})
 	private static BlockState copyProperty(
 			BlockState from,
 			BlockState to,

@@ -20,6 +20,9 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,6 +34,9 @@ public class ItemApplicationHandler {
 		ItemStack heldItem = event.getItemStack();
 		BlockPos startPos = event.getPos();
 		BlockState blockState = level.getBlockState(startPos);
+
+		int materialCount = heldItem.getCount();
+		int processedBlocks = 0;
 
 		if (event.isCanceled()) {
 			return;
@@ -67,11 +73,24 @@ public class ItemApplicationHandler {
 				targetState -> targetState.is(blockState.getBlock())
 		);
 
-		for (BlockPos currentPos : targets) {
+		// 按与点击位置的曼哈顿距离由近及远排序(距离相同时按 x/y/z 字典序固定先后),
+		// 使套壳配方在受手持材料数量限制时仍以大致由内到外的顺序逐个执行
+		List<BlockPos> orderedTargets = new ArrayList<>(targets);
+		orderedTargets.sort(Comparator
+				.comparingInt((BlockPos pos) -> pos.distManhattan(startPos))
+				.thenComparingInt(BlockPos::getX)
+				.thenComparingInt(BlockPos::getY)
+				.thenComparingInt(BlockPos::getZ));
+
+		for (BlockPos currentPos : orderedTargets) {
 			BlockState currentState = level.getBlockState(currentPos);
 
 			if (!currentState.is(blockState.getBlock())) {
 				continue;
+			}
+
+			if (processedBlocks >= materialCount) {
+				return;
 			}
 
 			BlockState newState =
@@ -104,6 +123,7 @@ public class ItemApplicationHandler {
 					}
 				}
 			}
+			processedBlocks++;
 		}
 	}
 }

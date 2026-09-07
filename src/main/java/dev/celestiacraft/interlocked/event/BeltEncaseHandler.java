@@ -33,8 +33,21 @@ public class BeltEncaseHandler {
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
+		if (!stack.is(AllBlocks.ANDESITE_CASING.asItem())
+				&& !stack.is(AllBlocks.BRASS_CASING.asItem())
+				&& !stack.is(AllItems.WRENCH.get())) {
+			return;
+		}
+		if (!state.is(AllBlocks.BELT.get())) {
+			return;
+		}
 
 		BeltBlockEntity controller = BeltHelper.getControllerBE(level, pos);
+
+		if (controller == null) {
+			return;
+		}
+
 		int beltLength = controller.beltLength;
 
 		for (int i = 0; i < beltLength; i++) {

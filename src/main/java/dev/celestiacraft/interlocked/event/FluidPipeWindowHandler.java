@@ -2,6 +2,7 @@ package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllTags;
 import com.simibubi.create.content.fluids.FluidTransportBehaviour;
 import com.simibubi.create.content.fluids.pipes.GlassFluidPipeBlock;
 import dev.celestiacraft.interlocked.Interlocked;
@@ -40,7 +41,7 @@ public class FluidPipeWindowHandler {
 		if (!state.is(AllBlocks.FLUID_PIPE.get()) && !state.is(AllBlocks.GLASS_FLUID_PIPE.get())) {
 			return;
 		}
-		if (!stack.is(AllItems.WRENCH.get())) {
+		if (!AllTags.AllItemTags.WRENCH.matches(stack)) {
 			return;
 		}
 

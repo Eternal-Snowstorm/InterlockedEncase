@@ -2,6 +2,7 @@ package dev.celestiacraft.interlocked.event;
 
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
+import com.simibubi.create.AllTags;
 import dev.celestiacraft.interlocked.Interlocked;
 import dev.celestiacraft.interlocked.utils.InterlockHelper;
 import net.minecraft.core.BlockPos;
@@ -34,7 +35,7 @@ public class EncasedShaftWrenchHandler {
 		if (!InterlockHelper.isActivated(event)) {
 			return;
 		}
-		if (!stack.is(AllItems.WRENCH.get())) {
+		if (!AllTags.AllItemTags.WRENCH.matches(stack)) {
 			return;
 		}
 		if (!state.is(AllBlocks.ANDESITE_ENCASED_SHAFT.get()) && !state.is(AllBlocks.BRASS_ENCASED_SHAFT.get())) {
