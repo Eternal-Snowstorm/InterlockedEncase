@@ -25,6 +25,7 @@ public class EncasedShaftReplaceHandler {
 		ItemStack stack = event.getItemStack();
 		BlockPos pos = event.getPos();
 		BlockState state = level.getBlockState(pos);
+		ItemStack copy = stack.copy();
 
 		if (level.isClientSide()) {
 			return;
@@ -50,6 +51,7 @@ public class EncasedShaftReplaceHandler {
 						&& targetState.getValue(BlockStateProperties.AXIS) == axis
 		);
 
+		stack.setCount(copy.getCount());
 		confirmInteraction(event);
 		for (BlockPos targetPos : targets) {
 			level.destroyBlock(targetPos, false);
